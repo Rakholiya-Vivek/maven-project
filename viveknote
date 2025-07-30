@@ -1,0 +1,48 @@
+The 403 Access Denied error you're seeing is related to Tomcat's security configuration, specifically for the Manager Web App.
+
+Tomcat restricts access to certain applications (like the Manager app) for security reasons. By default, the Manager app is restricted to localhost (i.e., only accessible from the same machine Tomcat is running on). This can be fixed by modifying Tomcat's configuration files to allow remote access.
+
+Here’s how to fix it:
+1. Edit tomcat-users.xml
+The tomcat-users.xml file contains the user credentials and roles for accessing the Manager and Host Manager apps.
+
+File Path: /opt/tomcat/conf/tomcat-users.xml
+
+To allow access to the Manager app, you need to create a user with the appropriate roles (e.g., manager-gui).
+
+Here’s an example of how to modify tomcat-users.xml:
+
+Steps:
+1.Open the tomcat-users.xml file inside the container:
+docker exec -it <container_id> bash
+vi /opt/tomcat/conf/tomcat-users.xml
+
+2.Add the following lines before the </tomcat-users> tag (if not already present):
+<role rolename="manager-gui"/>
+<role rolename="admin-gui"/>
+<user username="admin" password="adminpassword" roles="manager-gui,admin-gui"/>
+
+3.Save and exit the file.
+
+
+ Allow Remote Access to Manager App
+By default, the Manager and Host Manager apps are restricted to local access. You need to change the context.xml file for the Manager app to allow remote access.
+
+File Path: /opt/tomcat/webapps/manager/META-INF/context.xml
+
+Find and modify the following section inside context.xml
+Edit context.xml to allow access from any IP (or your specific IP):
+<Context antiResourceLocking="false" privileged="true">
+    <Valve className="org.apache.catalina.valves.RemoteAddrValve" 
+           allow=".*" /> <!-- This allows access from all IPs -->
+</Context>
+
+
+Restart Tomcat (or the container)
+After making the changes, restart Tomcat to apply the configuration changes.
+
+To restart the Docker container:
+docker restart <container_id>
+
+
+આ  બધુ neno thi karvu inside container
