@@ -43,6 +43,3 @@ After making the changes, restart Tomcat to apply the configuration changes.
 
 To restart the Docker container:
 docker restart <container_id>
-
-
-આ  બધુ neno thi karvu inside container
